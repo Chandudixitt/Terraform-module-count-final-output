@@ -52,4 +52,3 @@ resource "azurerm_subnet_network_security_group_association" "subnet_nsg" {
 output "id" {
   value = azurerm_network_security_group.nsg.id
 }
-
