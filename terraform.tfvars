@@ -6,7 +6,6 @@ subnet_name         = "PrimeSquare-IAC-subnet"
 subnet_id           = "/subscriptions/8137c2f4-3363-4a3b-93f6-c6acd62fbd52/resourceGroups/PrimeSquare-IAC-Resource-Group/providers/Microsoft.Network/virtualNetworks/PrimeSquare-IAC-VNET/subnets/PrimeSquare-IAC-subnet"
 nic_name            = "PrimeSquare-IAC-NIC"
 nsg_name            = "PrimeSquare-IAC-NSG"
-public_ip_name      = "PrimeSquare-IAC-Public-IP"
 
 vm_details = [
   {
@@ -14,6 +13,7 @@ vm_details = [
     vm_count = 2
     vm_size  = "Standard_DS1_v2"
     disk_type = "Standard_LRS"
+    os_disk_size = 32
     username = "azureuser"
     os_image = {
       publisher = "Canonical"
