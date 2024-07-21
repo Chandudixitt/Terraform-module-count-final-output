@@ -45,11 +45,6 @@ variable "os_disk_storage_account_type" {
   type        = string
 }
 
-variable "public_ip_name" {
-  description = "The name of the publicip"
-  type        = string
-}
-
 variable "vm_details" {
   description = "Details of VMs to be created"
   type = list(object({
@@ -57,6 +52,7 @@ variable "vm_details" {
     vm_size     = string
     vm_count    = number
     disk_type   = string
+    os_disk_size = number
     username    = string
     os_image    = map(string)
   }))
@@ -100,4 +96,3 @@ variable "tags" {
     Project     = "PrimeSquare-IAC"
   }
 }
-
