@@ -16,7 +16,7 @@ resource "azurerm_network_interface" "nic" {
 
 resource "azurerm_public_ip" "pubip" {
   count               = var.vm_count
-  name                = "${var.public_ip_name}-${count.index+1}"
+  name                = "${var.vm_name}-Public-IP-${count.index+1}"
   location            = var.location
   resource_group_name = var.resource_group_name
   allocation_method   = "Static"
@@ -24,27 +24,7 @@ resource "azurerm_public_ip" "pubip" {
   tags = var.tags
 }
 
-#resource "azurerm_network_security_group" "nsg" {
-#  name                = "${var.vm_name}-NSG"
-#  location            = var.location
-#  resource_group_name = var.resource_group_name
-#
-#  security_rule {
-#    name                       = "Allow-SSH"
-#    priority                   = 1001
-#    direction                  = "Inbound"
-#    access                     = "Allow"
-#    protocol                   = "Tcp"
-#    source_port_range          = "*"
-#    destination_port_range     = "22"
-#    source_address_prefix      = "*"
-#    destination_address_prefix = "*"
-#  }
-
-#  tags = var.tags
-#}
-
-resource "azurerm_virtual_machine" "virtual_machine" {
+resource "azurerm_virtual_machine" "vm" {
   count                = var.vm_count
   name                 = "${var.vm_name}-${count.index+1}"
   location             = var.location
@@ -52,11 +32,15 @@ resource "azurerm_virtual_machine" "virtual_machine" {
   network_interface_ids = [azurerm_network_interface.nic[count.index].id]
   vm_size              = var.vm_size
 
+  delete_os_disk_on_termination = true
+  #delete_data_disks_on_termination = true
+
   storage_os_disk {
-    name              = "PrimeSquare-IAC-OsDisk-${count.index+1}"
-    caching           = "ReadWrite"
-    create_option     = "FromImage"
-    managed_disk_type = var.os_disk_storage_account_type
+    name                 = "${var.vm_name}-osdisk-${count.index+1}"
+    caching              = "ReadWrite"
+    create_option        = "FromImage"
+    managed_disk_type    = var.os_disk_storage_account_type
+    disk_size_gb         = var.os_disk_size
   }
 
   storage_image_reference {
@@ -73,7 +57,7 @@ resource "azurerm_virtual_machine" "virtual_machine" {
 
   os_profile_linux_config {
     disable_password_authentication = true
-    
+
     ssh_keys {
       path     = "/home/${var.username}/.ssh/authorized_keys"
       key_data = var.ssh_public_key
@@ -87,4 +71,3 @@ output "public_ip_addresses" {
   description = "The public IP addresses of the VMs"
   value       = azurerm_public_ip.pubip[*].ip_address
 }
-
