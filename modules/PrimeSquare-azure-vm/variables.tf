@@ -13,11 +13,6 @@ variable "username" {
   type        = string
 }
 
-#variable "password" {
-#  description = "The admin password of the VM"
-#  type        = string
-#}
-
 variable "os_image" {
   description = "The OS image to use for the VM"
   type        = map(string)
@@ -43,11 +38,6 @@ variable "nic_name" {
   type        = string
 }
 
-variable "public_ip_name" {
-  description = "The name of the publicip"
-  type        = string
-}
-
 variable "tags" {
   description = "Tags for the resources"
   type        = map(any)
@@ -58,14 +48,18 @@ variable "vm_count" {
   type        = number
 }
 
+variable "os_disk_size" {
+  description = "The size of the OS disk in GB"
+  type        = number
+}
+
 variable "ssh_public_key" {
   description = "SSH public key for VMs"
   type        = string
 }
 
 variable "os_disk_storage_account_type" {
-  description = "(Optional) Specifies the storage account type of the os disk of the virtual machine"
+  description = "Specifies the storage account type of the os disk of the virtual machine"
   default     = "Standard_LRS"
   type        = string
 }
-
