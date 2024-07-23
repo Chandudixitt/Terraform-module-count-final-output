@@ -6,6 +6,8 @@ subnet_name         = "PrimeSquare-IAC-subnet"
 subnet_id           = "/subscriptions/8137c2f4-3363-4a3b-93f6-c6acd62fbd52/resourceGroups/PrimeSquare-IAC-Resource-Group/providers/Microsoft.Network/virtualNetworks/PrimeSquare-IAC-VNET/subnets/PrimeSquare-IAC-subnet"
 nic_name            = "PrimeSquare-IAC-NIC"
 nsg_name            = "PrimeSquare-IAC-NSG"
+storage_account     = "demostatesa12"
+storage_container   = "terraform-private-key"
 
 vm_details = [
   {
@@ -33,7 +35,7 @@ inbound_rules = [
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "22"
-    source_address_prefix      = "205.254.168.249/32"
+    source_address_prefix      = "111.93.10.210/32"
     destination_address_prefix = "*"
   },
   {
@@ -44,7 +46,7 @@ inbound_rules = [
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "80"
-    source_address_prefix      = "205.254.168.249/32"
+    source_address_prefix      = "111.93.10.210/32"
     destination_address_prefix = "*"
   }
 ]
