@@ -33,6 +33,19 @@ resource "tls_private_key" "sshkey" {
   rsa_bits  = 4096
 }
 
+resource "local_file" "private_key" {
+  content  = tls_private_key.sshkey.private_key_pem
+  filename = "${path.module}/private_key.pem"
+}
+
+resource "azurerm_storage_blob" "private_ssh_key" {
+  name                   = "private_ssh_key.pem"
+  storage_account_name   = var.storage_account
+  storage_container_name = var.storage_container
+  type                   = "Block"
+  source                 = local_file.private_key.filename
+}
+
 module "vm" {
   source                       = "./modules/PrimeSquare-azure-vm"
   count                        = length(var.vm_details)
@@ -48,6 +61,5 @@ module "vm" {
   subnet_id                    = var.subnet_id
   nic_name                     = var.nic_name
   ssh_public_key               = tls_private_key.sshkey.public_key_openssh
-
   tags                         = var.tags
 }
