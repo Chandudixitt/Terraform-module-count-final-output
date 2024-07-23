@@ -18,7 +18,6 @@ variable "vnet_name" {
   type        = string
 }
 
-
 variable "subnet_name" {
   description = "The name of the subnet"
   type        = string
@@ -36,6 +35,16 @@ variable "nic_name" {
 
 variable "nsg_name" {
   description = "The name of the Network Security Group"
+  type        = string
+}
+
+variable "storage_account" {
+  description = "storage account name"
+  type        = string
+}
+
+variable "storage_container" {
+  description = "storage container name"
   type        = string
 }
 
