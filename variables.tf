@@ -13,28 +13,35 @@ variable "location" {
   type        = string
 }
 
-variable "vnet_name" {
-  description = "The name of the VNET"
+variable "virtual_network_name" {
+  description = "The names of the vnet"
   type        = string
 }
 
-variable "subnet_name" {
-  description = "The name of the subnet"
-  type        = string
+#variable "subnet_ids" {
+#  description = "The ID of the subnet"
+#  type        = list(string)
+#}
+
+variable "subnet_details" {
+  description = "Details of subnets to be created"
+  type = list(object({
+    name     = string
+    address_prefix  = string
+  }))
 }
 
-variable "subnet_id" {
-  description = "The ID of the subnet"
-  type        = string
+variable "availability_set_details" {
+  description = "Details of the availability sets"
+  type = list(object({
+    name = string
+    fault_domain_count    = number
+    update_domain_count   = number
+  }))
 }
 
 variable "nic_name" {
   description = "The name of the nic"
-  type        = string
-}
-
-variable "nsg_name" {
-  description = "The name of the Network Security Group"
   type        = string
 }
 
@@ -55,53 +62,205 @@ variable "os_disk_storage_account_type" {
 }
 
 variable "vm_details" {
-  description = "Details of VMs to be created"
-  type = list(object({
+  type = map(object({
+    vm_count    = number
     vm_name     = string
     vm_size     = string
-    vm_count    = number
     disk_type   = string
     os_disk_size = number
     username    = string
-    os_image    = map(string)
+    os_image    = object({
+      publisher = string
+      offer     = string
+      sku       = string
+      version   = string
+    })
   }))
 }
 
-variable "inbound_rules" {
-  description = "Details of NSG rules to be created"
+variable "nsg_details" {
   type = list(object({
-    name        = string
-    priority    = number
-    direction   = string
-    access      = string
-    protocol    = string
-    source_port_range = string
-    destination_port_range = string
-    source_address_prefix = string
-    destination_address_prefix = string
+    name          = string
+    inbound_rules = list(object({
+      name              = string
+      priority          = number
+      direction         = string
+      access            = string
+      protocol          = string
+      source_port_range = string
+      destination_port_range = string
+      source_address_prefix = string
+      destination_address_prefix = string
+    }))
+    outbound_rules = list(object({
+      name              = string
+      priority          = number
+      direction         = string
+      access            = string
+      protocol          = string
+      source_port_range = string
+      destination_port_range = string
+      source_address_prefix = string
+      destination_address_prefix = string
+    }))
   }))
 }
 
-variable "outbound_rules" {
-  description = "Details of outbound NSG rules to be created"
-  type = list(object({
-    name        = string
-    priority    = number
-    direction   = string
-    access      = string
-    protocol    = string
-    source_port_range = string
-    destination_port_range = string
-    source_address_prefix = string
-    destination_address_prefix = string
-  }))
+variable "public_lb_name" {
+  description = "The name of the load balancer"
+  type        = string
 }
 
 variable "tags" {
   type        = map(any)
   description = "Tags for the resources"
+}
+
+variable "internal_lb_name" {
+  description = "The name of the internal-private load balancer"
+  type        = string
+}
+
+variable "health_probe_name" {
+  description = "Name of the health probe"
+  type        = string
+}
+
+variable "probe_port" {
+  description = "Port for the health probe"
+  type        = number
+}
+
+variable "probe_protocol" {
+  description = "Protocol for the health probe"
+  type        = string
+}
+
+variable "load_balancing_rule_name" {
+  description = "Name of the load balancing rule"
+  type        = string
+}
+
+variable "lb_rule_frontend_port" {
+  description = "Frontend port for the load balancing rule"
+  type        = number
+}
+
+variable "lb_rule_backend_port" {
+  description = "Backend port for the load balancing rule"
+  type        = number
+}
+
+variable "lb_rule_protocol" {
+  description = "Protocol for the load balancing rule"
+  type        = string
+}
+
+variable "internal_health_probe_name" {
+  description = "Name of the health probe for the internal LB"
+  type        = string
+}
+
+variable "internal_probe_port" {
+  description = "Port for the health probe"
+  type        = number
+}
+
+variable "internal_probe_protocol" {
+  description = "Protocol for the health probe"
+  type        = string
+}
+
+variable "internal_load_balancing_rule_name" {
+  description = "Name of the load balancing rule for the internal LB"
+  type        = string
+}
+
+variable "internal_lb_rule_frontend_port" {
+  description = "Frontend port for the load balancing rule"
+  type        = number
+}
+
+variable "internal_lb_rule_backend_port" {
+  description = "Backend port for the load balancing rule"
+  type        = number
+}
+
+variable "internal_lb_rule_protocol" {
+  description = "Protocol for the load balancing rule"
+  type        = string
+}
+
+variable "mysql_server_name" {
+  description = "Name of the MySQL Server"
+  type        = string
+}
+
+variable "administrator_login" {
+  description = "Admin username for MySQL server"
+  type        = string
+}
+
+variable "administrator_password" {
+  description = "Admin password for MySQL server"
+  type        = string
+  sensitive   = true
+}
+
+variable "mysql_version" {
+  description = "Version of MySQL"
+  type        = string
+  default     = "8.0.21"
+}
+
+variable "sku_name" {
+  description = "SKU for the MySQL server"
+  type        = string
+  default     = "GP_Standard_D4ads_v5"
+}
+
+variable "storage_mb" {
+  description = "Max storage allowed for the MySQL server in MB"
+  type        = number
+  default     = 5120
+}
+
+variable "backup_retention_days" {
+  description = "backup_retention_days of sql"
+  type        = number
+}
+
+variable "vm_to_avset_map" {
+  description = "Map of VM names to availability set indices"
+  type        = map(number)
   default     = {
-    Environment = "Development"
-    Project     = "PrimeSquare-IAC"
+    "PrimeSquare-IAC-Web-1"  = 0
+    "PrimeSquare-IAC-Web-2"  = 0
+    "PrimeSquare-IAC-App-1"  = 1
+    "PrimeSquare-IAC-App-2"  = 1
+    "PrimeSquare-IAC-Kafka-1"  = 2
+    "PrimeSquare-IAC-Kafka-2"  = 2
+    "PrimeSquare-IAC-ZK-1"  = 2
+    "PrimeSquare-IAC-ZK-2"  = 2
   }
+}
+
+variable "storage_account_name" {
+  type = string
+}
+
+variable "account_tier" {
+  type = string
+}
+
+variable "account_replication_type" {
+  type = string
+}
+
+variable "storage_container_name" {
+  type = string
+}
+
+variable "container_access_type" {
+  type    = string
 }

@@ -28,24 +28,20 @@ variable "resource_group_name" {
   type        = string
 }
 
-variable "subnet_id" {
+variable "subnet_ids" {
   description = "The ID of the subnet"
-  type        = string
+  type        = list(string)
+}
+
+variable "assign_public_ip" {
+  type    = bool
+  default = false
+  description = "A flag to determine if the VM should have a public IP. Only the first two VMs will have a public IP assigned."
 }
 
 variable "nic_name" {
   description = "The name of NIC"
   type        = string
-}
-
-variable "tags" {
-  description = "Tags for the resources"
-  type        = map(any)
-}
-
-variable "vm_count" {
-  description = "The number of VMs to create"
-  type        = number
 }
 
 variable "os_disk_size" {
@@ -63,3 +59,70 @@ variable "os_disk_storage_account_type" {
   default     = "Standard_LRS"
   type        = string
 }
+
+variable "vm_count" {
+  description = "count of the VM"
+  type        = string
+}
+
+variable "vm_details" {
+  type = map(object({
+    vm_name     = string
+    vm_count    = number
+    vm_size     = string
+    disk_type   = string
+    os_disk_size = number
+    username    = string
+    os_image    = object({
+      publisher = string
+      offer     = string
+      sku       = string
+      version   = string
+    })
+  }))
+}
+
+variable "availability_set_ids" {
+  description = "List of availability set IDs"
+  type        = list(string)
+}
+
+#variable "availability_set_details" {
+#  description = "Details of the availability sets"
+#  type = list(object({
+#    name = string
+#    fault_domain_count    = number
+#    update_domain_count   = number
+#  }))
+#}
+
+variable "vm_to_avset_map" {
+  description = "Map of VM names to availability set indices"
+  type        = map(number)
+  default     = {
+    "PrimeSquare-IAC-App-1"  = 0
+    "PrimeSquare-IAC-App-2"  = 0
+    "PrimeSquare-IAC-Web-1"  = 1
+    "PrimeSquare-IAC-Web-2"  = 1
+    "PrimeSquare-IAC-Kafka-1"  = 2
+    "PrimeSquare-IAC-Kafka-2"  = 2
+    "PrimeSquare-IAC-ZK-1"  = 2
+    "PrimeSquare-IAC-ZK-2"  = 2
+  }
+}
+
+#variable "nsg_name" {
+##  description = "The names of the network security groups"
+#  type        = string
+#}
+
+variable "tags" {
+  description = "Tags for the resources"
+  type        = map(any)
+}
+
+#variable "nic_ids" {
+#  description = "The ID of the NIC"
+#  type        = list(string)
+#}
+
